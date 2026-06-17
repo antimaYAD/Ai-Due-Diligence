@@ -1,17 +1,21 @@
 from typing import Any
-from google import genai
+
+from openai import OpenAI
+
 from app.core.config import settings
 
-_client = genai.Client(api_key=settings.GEMINI_API_KEY)
+_client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
 
 def _llm_call(system_prompt: str, user_content: str) -> str:
-    combined = f"{system_prompt}\n\n{user_content}"
-    response = _client.models.generate_content(
-        model=settings.GEMINI_MODEL,
-        contents=combined,
+    response = _client.chat.completions.create(
+        model=settings.OPENAI_MODEL,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_content},
+        ],
     )
-    return response.text or ""
+    return response.choices[0].message.content or ""
 
 
 def financial_agent(context_chunks: list[str], company_name: str) -> dict[str, Any]:

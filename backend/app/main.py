@@ -17,7 +17,7 @@ try:
 except Exception:
     pass
 
-application = FastAPI(
+app = FastAPI(
     title=settings.APP_NAME,
     description="Enterprise AI platform for financial due diligence — RAG + LangGraph agents",
     version="1.0.0",
@@ -25,7 +25,7 @@ application = FastAPI(
     redoc_url="/redoc",
 )
 
-application.add_middleware(
+app.add_middleware(
     CORSMiddleware,
     allow_origins=[settings.FRONTEND_URL, "http://localhost:3000"],
     allow_credentials=True,
@@ -33,13 +33,13 @@ application.add_middleware(
     allow_headers=["*"],
 )
 
-application.include_router(auth_router, prefix="/api/v1")
-application.include_router(companies_router, prefix="/api/v1")
-application.include_router(documents_router, prefix="/api/v1")
-application.include_router(analysis_router, prefix="/api/v1")
-application.include_router(chat_router, prefix="/api/v1")
+app.include_router(auth_router, prefix="/api/v1")
+app.include_router(companies_router, prefix="/api/v1")
+app.include_router(documents_router, prefix="/api/v1")
+app.include_router(analysis_router, prefix="/api/v1")
+app.include_router(chat_router, prefix="/api/v1")
 
 
-@application.get("/health")
+@app.get("/health")
 def health_check():
     return {"status": "ok", "service": settings.APP_NAME}

@@ -54,18 +54,6 @@ def list_analyses(
     return query.order_by(Analysis.created_at.desc()).all()
 
 
-@router.get("/{analysis_id}", response_model=AnalysisOut)
-def get_analysis(
-    analysis_id: str,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-):
-    analysis = db.query(Analysis).filter(Analysis.id == analysis_id).first()
-    if not analysis:
-        raise HTTPException(status_code=404, detail="Analysis not found")
-    return analysis
-
-
 @router.get("/reports/", response_model=list[ReportOut])
 def list_reports(
     company_id: str | None = None,
@@ -88,3 +76,15 @@ def get_report(
     if not report:
         raise HTTPException(status_code=404, detail="Report not found")
     return report
+
+
+@router.get("/{analysis_id}", response_model=AnalysisOut)
+def get_analysis(
+    analysis_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    analysis = db.query(Analysis).filter(Analysis.id == analysis_id).first()
+    if not analysis:
+        raise HTTPException(status_code=404, detail="Analysis not found")
+    return analysis

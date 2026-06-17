@@ -18,9 +18,9 @@ class Settings(BaseSettings):
     AWS_REGION: str = "us-east-1"
     S3_BUCKET_NAME: str = "ai-due-diligence-docs"
 
-    GEMINI_API_KEY: str = ""
-    GEMINI_MODEL: str = "gemini-2.0-flash-lite"
-    EMBEDDING_MODEL: str = "models/text-embedding-004"
+    OPENAI_API_KEY: str = ""
+    OPENAI_MODEL: str = "gpt-4o-mini"
+    EMBEDDING_MODEL: str = "text-embedding-3-small"
 
     STORAGE_BACKEND: str = "local"  # "local" for dev, "s3" for production
     LOCAL_UPLOAD_DIR: str = "uploads"

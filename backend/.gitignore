@@ -19,3 +19,4 @@ build/
 *.sqlite
 .DS_Store
 
+.db

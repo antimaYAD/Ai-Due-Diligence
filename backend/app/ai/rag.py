@@ -1,11 +1,11 @@
 from typing import Any
 
-from google import genai
+from openai import OpenAI
 
 from app.core.config import settings
 from app.core.database import SessionLocal
 
-_client = genai.Client(api_key=settings.GEMINI_API_KEY)
+_client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
 
 def retrieve_chunks(
@@ -70,11 +70,14 @@ def rag_query(
         f"Question: {question}\n\n"
         f"Document Excerpts:\n{context}"
     )
-    response = _client.models.generate_content(
-        model=settings.GEMINI_MODEL,
-        contents=prompt,
+    response = _client.chat.completions.create(
+        model=settings.OPENAI_MODEL,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": prompt},
+        ],
     )
-    answer = response.text or ""
+    answer = response.choices[0].message.content or ""
 
     sources = [
         {
