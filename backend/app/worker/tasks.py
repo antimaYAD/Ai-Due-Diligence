@@ -121,7 +121,8 @@ def process_document(self, document_id: str, s3_key: str):
 @celery_app.task(bind=True, name="run_analysis", max_retries=2)
 def run_analysis(self, analysis_id: str):
     """Dispatch LangGraph agent pipeline for a given analysis."""
-    from app.models.analysis import Analysis
+    from app.models.analysis import Analysis, Report
+    from app.models.company import Company
     from app.ai.orchestrator import run_agent_pipeline
 
     db = SessionLocal()
@@ -143,6 +144,18 @@ def run_analysis(self, analysis_id: str):
         analysis.summary = result.get("summary", "")
         analysis.status = "completed"
         analysis.completed_at = datetime.utcnow()
+
+        company = db.query(Company).filter(Company.id == analysis.company_id).first()
+        company_name = company.name if company else "Company"
+        report = Report(
+            id=str(uuid.uuid4()),
+            company_id=analysis.company_id,
+            title=f"{company_name} — {analysis.analysis_type.title()} Due Diligence Report",
+            report_type=analysis.analysis_type,
+            status="ready",
+            created_at=datetime.utcnow(),
+        )
+        db.add(report)
         db.commit()
 
         return {"analysis_id": analysis_id, "status": "completed"}

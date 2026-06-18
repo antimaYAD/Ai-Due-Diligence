@@ -18,6 +18,9 @@ class User(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     organization_id: Mapped[str] = mapped_column(String, ForeignKey("organizations.id"), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    pref_notif_reports: Mapped[bool] = mapped_column(Boolean, default=True, server_default="true")
+    pref_auto_process: Mapped[bool] = mapped_column(Boolean, default=True, server_default="true")
+    pref_debug_logs: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false")
 
     organization: Mapped["Organization"] = relationship("Organization", back_populates="users")
     chat_messages: Mapped[list["ChatMessage"]] = relationship("ChatMessage", back_populates="user")

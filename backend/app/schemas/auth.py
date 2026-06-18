@@ -34,12 +34,23 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
 
 
+class UpdateProfileRequest(BaseModel):
+    name: str | None = None
+    email: EmailStr | None = None
+    pref_notif_reports: bool | None = None
+    pref_auto_process: bool | None = None
+    pref_debug_logs: bool | None = None
+
+
 class UserOut(BaseModel):
     id: str
     name: str
     email: str
     role: str
     organization_id: str | None
+    pref_notif_reports: bool = True
+    pref_auto_process: bool = True
+    pref_debug_logs: bool = False
 
     class Config:
         from_attributes = True
